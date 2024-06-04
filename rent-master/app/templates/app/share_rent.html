@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>成都爱家租房系统</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    </head>
+<body>
+<nav class="navbar navbar-inverse" role="navigation" >
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="{% url 'app:index' %}">APP首页</a>
+        </div>
+        <div>
+            <form class="navbar-form navbar-right"  method="POST" action="{% url 'app:search' %}">
+            {% csrf_token %}
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="请输入地址或小区名开始找房" name="keyword">
+                </div>
+                <button type="submit" class="btn btn-default">搜索</button>
+            </form>
+            <div>
+                <ul class="nav navbar-nav">
+                    <li><a href="{% url 'app:entire_rent' %}">整租</a></li>
+                    <li><a href="{% url 'app:share_rent' %}">合租</a></li>
+                    <li><a href="{% url 'rentAnalysis:home' %}">成都租房信息分析</a></li>
+                    <li><a href="{% url 'user:register' %}">注册</a></li>
+                    <li><a href="{% url 'user:login' %}">登录</a></li>
+                    <li><a href="{% url 'user:set_password' %}">修改密码</a></li>
+                    <li><a href="admin">前往后台</a></li>
+                    <li><a href="{% url 'app:Large_Language_Model' %}">大语言模型</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+<h1 style='title' align='center'>合租</h1><br/>
+    <div class='container'>
+        <h3>已为你找到 {{count}} 套合租租房</h3>
+        <hr/>
+        <div class='row'>
+            {% for book in current_page %}
+            <div class='col-sm-4'>
+                <div class='card', style='width: 50rem; height: 60rem;'>
+                    <img class='card-img-top' src={{book.picture}} alt='Card image cap'>
+                    <div class='card body'>
+                        <h5 class='card-title'>标题：{{book.title}}</h5>
+                        <p class='card-text'>
+                            地址：{{ book.address }}<br/>
+                            面积：{{ book.area }}<br/>
+                            类型：{{ book.types }}<br/>
+                            备注：{{ book.remark }}<br/>
+                            <span class="glyphicon glyphicon-star">租金：{{ book.price }}元/月</span><br/>
+                            <a href={{book.link}} class="btn btn-primary">访问详情</a>
+                            <a href= "{% url 'app:leave_a_message' %}" class="btn btn-primary">留言</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+<nav aria-label="Page navigation" align='center'>
+    <ul class="pagination">
+        {% if current_page.has_previous %}
+            <li>
+                <a href="?page={{ current_page.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">上一页</span>
+                </a>
+            </li>
+        {% else %}
+            <li class="disabled">
+                <a href="" aria-label="Previous">
+                    <span aria-hidden="true">上一页</span>
+                </a>
+            </li>
+        {% endif %}
+
+        {% for item in page_range %}
+            {% if current_page_num == item %}
+                <li class="active" ><a href="?page={{ item }}">{{ item }}</a></li>
+            {% else %}
+                <li><a href="?page={{ item }}">{{ item }}</a></li>
+            {% endif %}
+        {% endfor %}
+
+
+        {% if current_page.has_next %}
+            <li><a href="?page={{ current_page.next_page_number }}" aria-label="Next"><span aria-hidden="true">下一页</span></a></li>
+        {% else %}
+            <li class="disabled"><a href="" aria-label="Next"><span aria-hidden="true">下一页</span></a></li>
+        {% endif %}
+    </ul>
+</nav>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+</body>
+</html>
